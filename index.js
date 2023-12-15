@@ -2,6 +2,9 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 
+// Here, we are importing the function from our own module
+const replaceTemplate = require('./modules/replaceTemplate');
+
 // Here we are reading the data from the dev-data/data.json and sending it as the response to make this api work
 // In the path of the file the dot means the directory from which we are running the node command. The root directory will change if we run this directory from anywhere wlse stating the complete path of index.js
 // So stating the path like this is not always ideal
@@ -17,30 +20,6 @@ const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.h
 const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
 const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
 
-const replaceTemplate = (temp, product) => {
-
-    // Here, we are replacing all the placeholders with their real dynamic value for each of the element object
-    let output =  temp.replace(/{%PRODUCTNAME%}/, product.productName);
-
-    output = output.replace(/{%IMAGE%}/, product.image);
-
-    output = output.replace(/{%PRICE%}/, product.price);
-
-    output = output.replace(/{%QUANTITY%}/, product.quantity);
-
-    output = output.replace(/{%FROM%}/, product.from);
-
-    output = output.replace(/{%NUTRIENTS%}/, product.nutrients);
-
-    output = output.replace(/{%DESCRIPTION%}/, product.description);
-
-    output = output.replace(/{%ID%}/, product.id);
-
-    if(!product.organic) output = output.replace(/{%NOTORGANIC%}/, 'not-organic');
-
-    return output;
-
-}
 
 // The Server
 const server = http.createServer((req,res) => {
