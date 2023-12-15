@@ -44,10 +44,15 @@ const replaceTemplate = (temp, product) => {
 
 // The Server
 const server = http.createServer((req,res) => {
-    const pathName = req.url;
+
+    // The parse method of the url module take the first argument as the url of the page and second is true which resembles whether we want to convert the query to the object or not.
+    // So. it will return the URL object which contains all the information about the url like path is stored in the pathname var and the parmeter is stored in the query object inside Url object.
+    // console.log(url.parse(req.url, true));
+
+    const { query, pathname } = url.parse(req.url, true);
 
     // Overview Page
-    if(pathName === '/' || pathName === '/overview') {
+    if(pathname === '/' || pathname === '/overview') {
         res.writeHead(200, {
             'Content-type': 'text/html'
         })
@@ -64,14 +69,19 @@ const server = http.createServer((req,res) => {
     }
 
     // Product Page
-    else if(pathName === '/product') {
+    else if(pathname === '/product') {
 
-
-        res.end('This is product');
+        res.writeHead(200, {
+            'Content-type': 'text/html'
+        })
+        // Defining which product show
+        const product = dataObj[query.id];
+        const output =  replaceTemplate(tempProduct, product);
+        res.end(output);
     }
 
     // API
-    else if(pathName === '/api') {
+    else if(pathname === '/api') {
 
         // We are sending back directly the data string not the parsed data, so before that we have to set the Content-type
         res.writeHead(200, {
